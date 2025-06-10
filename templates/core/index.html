@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Kinoafisha — Главная</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Собственные стили -->
+    <link rel="stylesheet" href="{% static 'core/style.css' %}">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <h1 class="mb-4 text-center">🎬 Kinoafisha</h1>
+
+    <!-- 📅 Виджет 1: Календарь релизов -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <strong>Скоро в кино</strong>
+            <a href="#" class="text-decoration-none">Календарь релизов →</a>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for movie in upcoming_movies %}
+            <li class="list-group-item d-flex align-items-center">
+                {% if movie.poster %}
+                    <img src="{{ movie.poster.url }}" class="poster-thumb me-3" alt="Постер">
+                {% endif %}
+                <div class="flex-grow-1">
+                    <div class="fw-bold">{{ movie.title }}</div>
+                    <div class="text-muted small">{{ movie.description|truncatewords:8 }}</div>
+                </div>
+                <div class="text-center me-4">
+                    <span class="fw-bold">{{ movie.created_at|date:"d" }}</span><br>
+                    <small>{{ movie.created_at|date:"F" }}</small>
+                </div>
+                <button class="btn btn-outline-secondary btn-sm" title="Добавить в избранное">☆</button>
+            </li>
+            {% empty %}
+            <li class="list-group-item">Нет предстоящих релизов.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- 🎟 Виджет 2: Популярные фильмы по количеству сеансов -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header"><strong>Топ фильмов по числу сеансов</strong></div>
+        <ul class="list-group list-group-flush">
+            {% for movie in popular_by_sessions %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ forloop.counter }}. <a href="#">{{ movie.title }}</a></span>
+                <span class="badge bg-primary rounded-pill">{{ movie.session_count }} сеансов</span>
+            </li>
+            {% empty %}
+            <li class="list-group-item">Нет данных.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- 🌟 Виджет 3: Лучшие по оценкам -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header"><strong>Лучшие фильмы по оценке</strong></div>
+        <ul class="list-group list-group-flush">
+            {% for movie in top_rated %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ forloop.counter }}. <a href="#">{{ movie.title }}</a></span>
+                <span class="badge bg-success rounded-pill">{{ movie.avg_rating|floatformat:1 }}/10</span>
+            </li>
+            {% empty %}
+            <li class="list-group-item">Нет отзывов.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</div>
+
+</body>
+</html>
